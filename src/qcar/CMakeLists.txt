@@ -165,6 +165,9 @@ target_link_libraries(rgbd_transport ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 add_executable(command src/commandcpp.cpp)
 target_link_libraries(command ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 
+add_executable(keyboard_command_publisher src/keyboard_command_publisher.cpp)
+target_link_libraries(keyboard_command_publisher ${catkin_LIBRARIES})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

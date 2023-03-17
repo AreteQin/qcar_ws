@@ -22,7 +22,7 @@
       
   </node>
 
-  <node name="record" pkg="rosbag" type="record" args="-a -o $(find qcar)/bagfiles/QCar_SLAM"/>
+<!--   <node name="record" pkg="rosbag" type="record" args="-a -o $(find qcar)/bagfiles/QCar_SLAM"/> -->
 
   <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
 

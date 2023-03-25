@@ -1,5 +1,5 @@
-from Quanser.q_essential import LIDAR
-from Quanser.product_QCar import QCar
+from qcar.q_essential import LIDAR
+from qcar.product_QCar import QCar
 import time
 import struct
 import numpy as np 

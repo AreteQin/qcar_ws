@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     // Declare the RealSense pipeline, encapsulating the actual device and sensors
     rs2::pipeline pipe;
     rs2::config cfg;
-    cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 20);
+    cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 30);
     // Start streaming with the default recommended configuration
     pipe.start(cfg);
 

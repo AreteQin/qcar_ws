@@ -28,6 +28,9 @@ int main(int argc, char **argv) {
     while (ros::ok()) {
         rs2::frameset data = pipe.wait_for_frames(); // Wait for next set of frames from the camera (must be called in a loop)
 
+        // generate timestamp
+        std_msgs::Header timesptamp;
+        timesptamp.stamp = ros::Time::now();
 //    rs2::frame color_frame = color_map.colorize(data.get_color_frame());
         rs2::frame color_frame = data.get_color_frame();
         // Query frame size (width and height)
@@ -37,7 +40,7 @@ int main(int argc, char **argv) {
         // Create OpenCV matrix of size (w,h) from the colorized depth data
         color_cv = cv::Mat(cv::Size(640, 480), CV_8UC3, (void *) color_frame.get_data(), cv::Mat::AUTO_STEP);
 
-        pub_color.publish(cv_bridge::CvImage(std_msgs::Header(), "bgr8", color_cv).toImageMsg());
+        pub_color.publish(cv_bridge::CvImage(timesptamp, "bgr8", color_cv).toImageMsg());
         ros::spinOnce();
     }
 }

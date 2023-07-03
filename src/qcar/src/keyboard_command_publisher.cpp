@@ -70,16 +70,15 @@ void Teleop::keyLoop() {
     puts("---------------------------");
     puts("Use arrow keys to move the robot.");
     puts("Press the space bar to stop the robot.");
-    puts("Press q to stop the program");
-    //puts("a/z - Increase/decrease linear velocity");
-    //puts("s/x - Increase/decrease angular velocity");
+    puts("a/z - Increase/decrease linear velocity");
+    puts("s/x - Increase/decrease angular velocity");
+//    puts("Press q to quit");
     while (ros::ok()) {
         // get the next event from the keyboard
         if (read(kfd, &c, 1) < 0) {
             perror("read():");
             exit(-1);
         }
-        input = "stop";
         char printable[100];
         ROS_DEBUG("value: 0x%02X\n", c);
         switch (c) {
@@ -108,11 +107,11 @@ void Teleop::keyLoop() {
                 input = "stop";
                 dirty = true;
                 break;
-            case KEYCODE_Q:
-                ROS_DEBUG("QUIT");
-                ROS_INFO_STREAM("You quit the teleop successfully");
-                return;
-                break;
+//            case KEYCODE_Q:
+//                ROS_DEBUG("QUIT");
+//                ROS_INFO_STREAM("You quit the teleop successfully");
+//                return;
+//                break;
         }
         std_msgs::String keyboard_input;
         if (dirty == true) {

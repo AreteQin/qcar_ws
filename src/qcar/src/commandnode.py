@@ -71,7 +71,7 @@ class CommandNode(object):
                 pose = np.array([throttle, steering_angle])
                 self.process_command(pose)
 
-        time.sleep(0.01)
+        # time.sleep(0.01)
 
 if __name__ == '__main__':
     rospy.init_node('command_node')

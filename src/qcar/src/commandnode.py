@@ -46,10 +46,10 @@ class CommandNode(object):
                 self.process_command(pose)
             else:
                 if self.keyboard_cmd.data == 'up':
-                    throttle = 0.1 + throttle
+                    throttle = 0.01 + throttle
                     steering_angle = steering_angle
                 elif self.keyboard_cmd.data == 'down':
-                    throttle = -0.1 + throttle
+                    throttle = -0.01 + throttle
                     steering_angle = steering_angle
                 elif self.keyboard_cmd.data == 'right':
                     throttle = throttle

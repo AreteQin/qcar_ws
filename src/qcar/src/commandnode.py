@@ -38,10 +38,9 @@ class CommandNode(object):
         self.cmd_pub_.publish(pub_cmd)
 
     def run(self):
-
+        throttle = 0.0
+        steering_angle = 0.0
         while not rospy.is_shutdown():
-            throttle = 0.0
-            steering_angle = 0.0
             if self.keyboard_cmd is None:
                 pose = np.array([throttle, steering_angle])
                 self.process_command(pose)

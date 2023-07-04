@@ -6,12 +6,6 @@
 
   <param name="/use_sim_time" value="false"/>
 
-
-  <node name="command_node" pkg="qcar"
-          type="commandnode.py">
-      
-  </node>
-
   <node name="qcar_node" pkg="qcar"
       type="qcarnode.py">
       

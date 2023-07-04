@@ -33,8 +33,7 @@ private:
     ros::Publisher keyboard_pub_;
 };
 
-Teleop::Teleop() :
-        input("stop") {
+Teleop::Teleop() : input("stop") {
     keyboard_pub_ = nh_.advertise<std_msgs::String>("/qcar/keyboard_command", 1);
 }
 
@@ -70,16 +69,17 @@ void Teleop::keyLoop() {
     puts("---------------------------");
     puts("Use arrow keys to move the robot.");
     puts("Press the space bar to stop the robot.");
-    puts("a/z - Increase/decrease linear velocity");
-    puts("s/x - Increase/decrease angular velocity");
-//    puts("Press q to quit");
+//    puts("a/z - Increase/decrease linear velocity");
+//    puts("s/x - Increase/decrease angular velocity");
+    puts("Press q to quit");
     while (ros::ok()) {
+        input = "stop";
         // get the next event from the keyboard
         if (read(kfd, &c, 1) < 0) {
             perror("read():");
             exit(-1);
         }
-        char printable[100];
+//        char printable[100];
         ROS_DEBUG("value: 0x%02X\n", c);
         switch (c) {
             case KEYCODE_L:
@@ -107,15 +107,15 @@ void Teleop::keyLoop() {
                 input = "stop";
                 dirty = true;
                 break;
-//            case KEYCODE_Q:
-//                ROS_DEBUG("QUIT");
-//                ROS_INFO_STREAM("You quit the teleop successfully");
-//                return;
-//                break;
+            case KEYCODE_Q:
+                ROS_DEBUG("QUIT");
+                ROS_INFO_STREAM("You quit the teleop successfully");
+                quit(0);
+                return;
         }
         std_msgs::String keyboard_input;
+        keyboard_input.data = input;
         if (dirty == true) {
-            keyboard_input.data = input;
             keyboard_pub_.publish(keyboard_input);
             dirty = false;
         }

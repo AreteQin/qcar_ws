@@ -40,22 +40,24 @@ class CommandNode(object):
     def run(self):
 
         while not rospy.is_shutdown():
-
+            throttle = 0.0
+            steering_angle = 0.0
             if self.keyboard_cmd is None:
-                continue
+                pose = np.array([throttle, steering_angle])
+                self.process_command(pose)
             else:
                 if self.keyboard_cmd.data == 'up':
-                    throttle = 0.07
-                    steering_angle = 0.0
+                    throttle = 0.01 + throttle
+                    steering_angle = steering_angle
                 elif self.keyboard_cmd.data == 'down':
-                    throttle = -0.062
-                    steering_angle = 0.0
+                    throttle = -0.01 + throttle
+                    steering_angle = steering_angle
                 elif self.keyboard_cmd.data == 'right':
-                    throttle = 0.07
-                    steering_angle = -0.2
+                    throttle = throttle
+                    steering_angle = -0.1 + steering_angle
                 elif self.keyboard_cmd.data == 'left':
-                    throttle = 0.078
-                    steering_angle = 0.2
+                    throttle = throttle
+                    steering_angle = 0.1 + steering_angle
                 elif self.keyboard_cmd.data == 'suffle':
                     if n == 0:
                         throttle = 0.1
@@ -64,7 +66,7 @@ class CommandNode(object):
                     else:
                         throttle = 0.0
                         steering_angle = 0.0
-                else:
+                elif self.keyboard_cmd.data == 'stop':
                     throttle = 0.0
                     steering_angle = 0.0
                 pose = np.array([throttle, steering_angle])

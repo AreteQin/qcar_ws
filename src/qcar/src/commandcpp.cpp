@@ -2,112 +2,130 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Vector3Stamped.h"
-
-
-#include "quanser_types.h"
-#include "quanser_memory.h"
-#include "quanser_messages.h"
-#include "quanser_signal.h"
-#include "quanser_timer.h"
-#include "quanser_hid.h"
-// #include "quanser_host_game_controller.h"
-
 #include <sstream>
+#include <termios.h>
+#include <signal.h>
+#include <termios.h>
+#include <stdio.h>
+#include <string>
 
-int main(int argc, char **argv)
-{
-	t_double LLA = 0.0;
-	t_double LLO = 0.0;
-	t_double LT = 0.0;
-	t_double RLA = 0.0;
-	t_double RLO = 0.0;
-	t_double RT = 0.0;
-	t_boolean flag_z = false;
-	t_boolean flag_rz = false;
-	t_double A = 0.0;
-	t_double B = 0.0;
-	t_uint8 X = 0.0;
-	t_double Y = 0.0;
-	t_uint8 LB = 0.0;
-	t_double RB = 0.0;
-	t_double up = 0.0;
-	t_double right = 0.0;
-	t_double left = 0.0;
-	t_double down = 0.0;
-	t_double command[2];
-	t_double throttle;
-	t_double steering;
+#define KEYCODE_R 0x43
+#define KEYCODE_L 0x44
+#define KEYCODE_U 0x41
+#define KEYCODE_D 0x42
+#define KEYCODE_A 0x61
+#define KEYCODE_Q 0x71
+#define KEYCODE_SPACE 0x20
 
-	t_game_controller gamepad;
-	t_error result;
-	t_uint8 controller_number = 1;
-	t_uint16 buffer_size = 12;
-	t_double deadzone[6] = {0.0};
-	t_double saturation[6] = {0.0};
-	t_boolean auto_center = false;
-	t_uint16 max_force_feedback_effects = 0;
-	t_double force_feedback_gain = 0.0;
-	t_game_controller_states data;
-	t_boolean is_new;
+class Teleop {
+public:
+    Teleop();
 
-	ros::init(argc, argv, "command_cpp_node");
-	ros::NodeHandle n;
-	ros::Rate loop_rate(1000);
-	ros::Publisher command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar/user_command", 1000);
+    void keyLoop();
 
-	result = game_controller_open(controller_number, buffer_size, deadzone, saturation, auto_center,
-                     max_force_feedback_effects, force_feedback_gain, &gamepad);
+private:
+    ros::NodeHandle nh_;
+    double throttle, steering;
+    ros::Publisher command_pub;
+};
 
-	if (result >= 0)
-	{
-		geometry_msgs::Vector3Stamped command_msgs;
+Teleop::Teleop() : throttle(0), steering(0) {
+    ros::NodeHandle n;
+    command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar/user_command", 1000);
+}
 
-		while (ros::ok())
-		{
-			result = game_controller_poll(gamepad, &data, &is_new);
-			LLA = -1*data.x;
-			
-			if (data.rz == 0 && !(flag_rz))
-			{
-				RT = 0;
-			}
-			else
-			{
-				RT = 0.5 + 0.5*data.rz;
-				flag_rz = true;
-			}
-		
+int kfd = 0;
+struct termios cooked, raw;
 
-			A = (t_uint8)(data.buttons & (1 << 0));
-			LB = (t_uint8)((data.buttons & (1 << 4))/16);
-			if (is_new == true)
-			{
-				if (LB == 1)
-				{
-					if (A == 1)
-					{
-						throttle = RT * -0.3;
-						steering = LLA * 0.5;
-					}
-					else
-					{
-						throttle = RT * 0.3;
-						steering = LLA * 0.5;
-					}
-				}
-				else
-				{
-					throttle = 0;
-					steering = 0;
-				}
-				command_msgs.header.stamp = ros::Time::now();
-				command_msgs.header.frame_id = std::string("command_input");
-				command_msgs.vector.x = throttle;
-				command_msgs.vector.y = steering;
-				command_pub.publish(command_msgs);
-			}
-		}
-		game_controller_close(gamepad);
-	}
+void quit(int sig) {
+    tcsetattr(kfd, TCSANOW, &cooked);
+    ros::shutdown();
+    exit(0);
+}
 
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "command_cpp_node");
+    Teleop teleop;
+    ros::Rate loop_rate(1000);
+    signal(SIGINT, quit);
+    teleop.keyLoop();
+    return (0);
+}
+
+void Teleop::keyLoop() {
+    char c;
+    bool dirty = false;
+    // get the console in raw mode
+    tcgetattr(kfd, &cooked);
+    memcpy(&raw, &cooked, sizeof(struct termios));
+    raw.c_lflag &= ~(ICANON | ECHO);
+    // Setting a new line, then end of file
+    raw.c_cc[VEOL] = 1;
+    raw.c_cc[VEOF] = 2;
+    tcsetattr(kfd, TCSANOW, &raw);
+    puts("Reading from keyboard");
+    puts("---------------------------");
+    puts("Use arrow keys to move the robot.");
+    puts("Press the space bar to stop the robot.");
+//    puts("a/z - Increase/decrease linear velocity");
+//    puts("s/x - Increase/decrease angular velocity");
+    puts("Press q to quit");
+    throttle = 0;
+    steering = 0;
+    geometry_msgs::Vector3Stamped command_msgs;
+    while (ros::ok()) {
+        // get the next event from the keyboard
+        if (read(kfd, &c, 1) < 0) {
+            perror("read():");
+            exit(-1);
+        }
+//        char printable[100];
+        ROS_DEBUG("value: 0x%02X\n", c);
+        switch (c) {
+            case KEYCODE_L:
+                ROS_DEBUG("LEFT");
+                throttle = throttle;
+                steering = steering - 0.1;
+                dirty = true;
+                break;
+            case KEYCODE_R:
+                ROS_DEBUG("RIGHT");
+                throttle = throttle;
+                steering = steering + 0.1;
+                dirty = true;
+                break;
+            case KEYCODE_U:
+                ROS_DEBUG("UP");
+                throttle = throttle + 0.1;
+                steering = steering;
+                dirty = true;
+                break;
+            case KEYCODE_D:
+                ROS_DEBUG("DOWN");
+                throttle = throttle - 0.1;
+                dirty = true;
+                break;
+            case KEYCODE_SPACE:
+                ROS_DEBUG("STOP");
+                throttle = 0;
+                steering = 0;
+                dirty = true;
+                break;
+            case KEYCODE_Q:
+                ROS_DEBUG("QUIT");
+                ROS_INFO_STREAM("You quit the teleop successfully");
+                quit(0);
+                return;
+        }
+        std_msgs::String keyboard_input;
+        if (dirty == true) {
+            command_msgs.header.stamp = ros::Time::now();
+            command_msgs.header.frame_id = std::string("command_input");
+            command_msgs.vector.x = throttle;
+            command_msgs.vector.y = steering;
+            command_pub.publish(command_msgs);
+            dirty = false;
+        }
+    }
+    return;
 }

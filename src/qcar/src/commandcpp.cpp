@@ -85,30 +85,31 @@ void Teleop::keyLoop() {
             case KEYCODE_L:
                 ROS_DEBUG("LEFT");
                 throttle = throttle;
-                steering = steering - 0.1;
+                steering = steering + 0.1;
                 dirty = true;
                 break;
             case KEYCODE_R:
                 ROS_DEBUG("RIGHT");
                 throttle = throttle;
-                steering = steering + 0.1;
+                steering = steering - 0.1;
                 dirty = true;
                 break;
             case KEYCODE_U:
                 ROS_DEBUG("UP");
-                throttle = throttle + 0.1;
-                steering = steering;
+                throttle = throttle + 0.01;
+                steering = 0;
                 dirty = true;
                 break;
             case KEYCODE_D:
                 ROS_DEBUG("DOWN");
-                throttle = throttle - 0.1;
+                throttle = throttle - 0.01;
+                steering = 0;
                 dirty = true;
                 break;
             case KEYCODE_SPACE:
-                ROS_DEBUG("STOP");
                 throttle = 0;
                 steering = 0;
+                ROS_DEBUG("STOP");
                 dirty = true;
                 break;
             case KEYCODE_Q:

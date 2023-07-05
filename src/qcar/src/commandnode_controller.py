@@ -24,12 +24,12 @@ class CommandNode(object):
 			self.process_command(pose, new)
 			time.sleep(0.01)
 		self.gpad.terminate()
-#--------------------------------------------------------------------------------------------
+	#--------------------------------------------------------------------------------------------
 
 	def process_command(self, pose, new):
 		if new:
 			pub_cmd = Vector3Stamped()
-			pub_cmd.header.stamp = rospy.Time.now() 
+			pub_cmd.header.stamp = rospy.Time.now()
 			pub_cmd.header.frame_id = 'command_input'
 			pub_cmd.vector.x = float(pose[0])
 			pub_cmd.vector.y = float(pose[1])
@@ -40,4 +40,3 @@ if __name__ == '__main__':
 	r = CommandNode()
 
 	rospy.spin()
-	

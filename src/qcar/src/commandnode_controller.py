@@ -15,7 +15,7 @@ import time
 class CommandNode(object):
 	def __init__(self):
 		super().__init__()
-		self.gpad = gamepadViaTarget(1)
+		self.gpad = gamepadViaTarget(4)
 		self.cmd_pub_ = rospy.Publisher('/qcar/user_command', Vector3Stamped, queue_size=100)
 		while not rospy.is_shutdown():
 			# left_lateral, left_longitudinal, right_lateral, right_longitudinal, LT, RT, A, B, X, Y, LB, RB, BACK, START, Logitech, hat = gamepad_io_qcar() # .................... Logitech......................

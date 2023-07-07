@@ -33,6 +33,7 @@ class CommandNode(object):
 			pub_cmd.header.frame_id = 'command_input'
 			pub_cmd.vector.x = float(pose[0])
 			pub_cmd.vector.y = float(pose[1])
+			print(pose)
 			self.cmd_pub_.publish(pub_cmd)
 
 if __name__ == '__main__':

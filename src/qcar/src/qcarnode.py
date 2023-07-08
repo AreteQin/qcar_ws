@@ -67,4 +67,3 @@ if __name__ == '__main__':
 	r = QcarNode()
 	r.looping()
 	rospy.spin()
-	# print('Im here')

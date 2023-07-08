@@ -8,7 +8,10 @@
 
   <node name="qcar_node" pkg="qcar"
       type="qcarnode.py">
-      
+  </node>
+
+  <node name="commandnode" pkg="qcar"
+      type="commandnode_controller.py">
   </node>
 
 </launch>

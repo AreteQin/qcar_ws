@@ -166,9 +166,6 @@ target_link_libraries(rgbd_transport ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 add_executable(command src/commandcpp.cpp)
 target_link_libraries(command ${catkin_LIBRARIES})# ${QUANSER_LIBRARIES})
 
-add_executable(keyboard_command_publisher src/keyboard_command_publisher.cpp)
-target_link_libraries(keyboard_command_publisher ${catkin_LIBRARIES})
-
 add_executable(D435_publisher src/D435_publisher.cpp)
 target_link_libraries(D435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
 

@@ -85,30 +85,42 @@ void Teleop::keyLoop() {
             case KEYCODE_L:
                 ROS_DEBUG("LEFT");
                 throttle = throttle;
-                steering = steering + 0.1;
+                if (steering < 0.3) {
+                    steering = steering + 0.1;
+                }else{
+                    steering = steering;
+                }
                 dirty = true;
                 break;
             case KEYCODE_R:
                 ROS_DEBUG("RIGHT");
                 throttle = throttle;
-                steering = steering - 0.1;
+                if (steering > -0.5) {
+                    steering = steering - 0.1;
+                }else{
+                    steering = steering;
+                }
                 dirty = true;
                 break;
             case KEYCODE_U:
                 ROS_DEBUG("UP");
-                throttle = throttle + 0.01;
-                steering = 0;
+                if (throttle < 0.25) {
+                    throttle = throttle + 0.05;
+                }else{throttle = throttle;}
+                steering = -0.06; // bias to modify the steering angle to make the car go straight
                 dirty = true;
                 break;
             case KEYCODE_D:
                 ROS_DEBUG("DOWN");
-                throttle = throttle - 0.01;
-                steering = 0;
+                if (throttle > -0.25) {
+                    throttle = throttle - 0.05;
+                }else{throttle = throttle;}
+                steering = -0.06; // bias to modify the steering angle to make the car go straight
                 dirty = true;
                 break;
             case KEYCODE_SPACE:
                 throttle = 0;
-                steering = 0;
+                steering = -0.06;
                 ROS_DEBUG("STOP");
                 dirty = true;
                 break;

@@ -169,6 +169,9 @@ target_link_libraries(command ${catkin_LIBRARIES})# ${QUANSER_LIBRARIES})
 add_executable(D435_publisher src/D435_publisher.cpp)
 target_link_libraries(D435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
 
+add_executable(camera_360 src/camera_360.cpp)
+target_link_libraries(camera_360 ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

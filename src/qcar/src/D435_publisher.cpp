@@ -28,7 +28,9 @@ int main(int argc, char **argv) {
     std::cout << "fy: " << color_intrinsics.fy << std::endl;
     std::cout << "ppx: " << color_intrinsics.ppx << std::endl;
     std::cout << "ppy: " << color_intrinsics.ppy << std::endl;
-    std::cout << "coeffs: " << color_intrinsics.coeffs << std::endl;
+    std::cout << "coeffs: " << color_intrinsics.coeffs[0] << ", " << color_intrinsics.coeffs[1] << ", "
+              << color_intrinsics.coeffs[2] << ", " << color_intrinsics.coeffs[3] << ", "
+              << color_intrinsics.coeffs[4] << std::endl;
     std::cout << "model: " << color_intrinsics.model << std::endl;
 
     //image_transport will publish the video that can be compressed

@@ -20,6 +20,17 @@ int main(int argc, char **argv) {
     // Start streaming with the default recommended configuration
     pipe.start(cfg);
 
+    // Print intrinsic information of the color camera
+    rs2::video_stream_profile color_stream = pipe.get_active_profile().get_stream(
+            RS2_STREAM_COLOR).as<rs2::video_stream_profile>();
+    rs2_intrinsics color_intrinsics = color_stream.get_intrinsics();
+    std::cout << "fx: " << color_intrinsics.fx << std::endl;
+    std::cout << "fy: " << color_intrinsics.fy << std::endl;
+    std::cout << "ppx: " << color_intrinsics.ppx << std::endl;
+    std::cout << "ppy: " << color_intrinsics.ppy << std::endl;
+    std::cout << "coeffs: " << color_intrinsics.coeffs << std::endl;
+    std::cout << "model: " << color_intrinsics.model << std::endl;
+
     //image_transport will publish the video that can be compressed
     image_transport::ImageTransport it(nh);
     image_transport::Publisher pub_color = it.advertise("/camera/color/image_raw", 1);

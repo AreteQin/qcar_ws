@@ -28,6 +28,8 @@ int main(int argc, char **argv) {
     std::cout << "fy: " << color_intrinsics.fy << std::endl;
     std::cout << "ppx: " << color_intrinsics.ppx << std::endl;
     std::cout << "ppy: " << color_intrinsics.ppy << std::endl;
+    std::cout << "width: " << color_intrinsics.width << std::endl;
+    std::cout << "height: " << color_intrinsics.height << std::endl;
     std::cout << "coeffs: " << color_intrinsics.coeffs[0] << ", " << color_intrinsics.coeffs[1] << ", "
               << color_intrinsics.coeffs[2] << ", " << color_intrinsics.coeffs[3] << ", "
               << color_intrinsics.coeffs[4] << std::endl;

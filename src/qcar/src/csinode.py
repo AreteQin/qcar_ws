@@ -34,7 +34,7 @@ class CSINode(object):
 			csi2.read()
 			csi3.read()
 			csi4.read()
-			
+
 			# self.rate_pub.publish(msg)
 			self.process_cam_data(self.cam_pub_r, csi1.image_data)
 			self.process_cam_data(self.cam_pub_b, csi2.image_data)
@@ -46,11 +46,11 @@ class CSINode(object):
 		csi3.terminate()
 		csi4.terminate()
 
-#--------------------------------------------------------------------------------------------------------------
+	#--------------------------------------------------------------------------------------------------------------
 	def process_cam_data(self, cam_info, img_data):
 
 		pub_img = self.bridge.cv2_to_imgmsg(img_data, "bgr8")
-		pub_img.header.stamp =  rospy.Time.now() 
+		pub_img.header.stamp =  rospy.Time.now()
 		pub_img.header.frame_id = 'cam_img_input'
 		# cv2.imshow(str(cam_info), img_data)
 		# cv2.waitKey(1)

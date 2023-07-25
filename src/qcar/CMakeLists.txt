@@ -166,8 +166,8 @@ target_link_libraries(rgbd_transport ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 add_executable(command src/commandcpp.cpp)
 target_link_libraries(command ${catkin_LIBRARIES})# ${QUANSER_LIBRARIES})
 
-add_executable(D435_publisher src/D435_publisher.cpp)
-target_link_libraries(D435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
+add_executable(d435_publisher src/d435_publisher.cpp)
+target_link_libraries(d435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
 
 add_executable(camera_360 src/camera_360.cpp)
 target_link_libraries(camera_360 ${OpenCV_LIBS} ${catkin_LIBRARIES})

@@ -11,7 +11,7 @@
   </node>
 
   <node name="d435_publisher" pkg="qcar"
-        type="d435_publisher">
+        type="d435_publisher" output = "screen">
   </node>
 
 </launch>

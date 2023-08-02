@@ -68,7 +68,7 @@ class QcarNode(object):
             time.sleep(self.sample_time)
 
 
-        self.myCar.terminate()
+        self.my_car.terminate()
 
 
     def process_cmd(self, sub_cmd):

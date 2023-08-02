@@ -22,7 +22,7 @@ class QcarNode(object):
         super().__init__()
         self.battery_pub_ = rospy.Publisher('/qcar/battery_state', BatteryState, queue_size=10)
         self.carvel_pub_ = rospy.Publisher('/qcar/velocity', Vector3Stamped, queue_size=10)
-        self.imu_pub = rospy.Publisher("qcar_imu/raw", Imu, queue_size=10)
+        self.imu_pub = rospy.Publisher('qcar_imu/raw', Imu, queue_size=10)
         self.my_car = QCar()
         self.sample_time = 0.001
         self.command = np.array([0, 0])
@@ -64,7 +64,7 @@ class QcarNode(object):
             imu_msg.angular_velocity.z = self.my_car.read_other_buffer_IMU[2]
             imu_msg.header.frame_id = "qcar_body"
             imu_msg.orientation_covariance[0] = -1 # set to -1 to indicate that orientation is not available
-            imu_pub.publish(imu_msg)
+            self.imu_pub.publish(imu_msg)
             time.sleep(self.sample_time)
 
 

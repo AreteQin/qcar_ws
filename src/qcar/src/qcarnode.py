@@ -23,7 +23,7 @@ class QcarNode(object):
         self.battery_pub_ = rospy.Publisher('/qcar/battery_state', BatteryState, queue_size=10)
         self.carvel_pub_ = rospy.Publisher('/qcar/velocity', Vector3Stamped, queue_size=10)
         self.imu_pub = rospy.Publisher("qcar_imu/raw", Imu, queue_size=10)
-        self.myCar = QCar()
+        self.my_car = QCar()
         self.sample_time = 0.001
         self.command = np.array([0, 0])
         self.cmd_sub_ = rospy.Subscriber('/qcar/user_command', Vector3Stamped, self.process_cmd, queue_size=100)
@@ -35,7 +35,7 @@ class QcarNode(object):
             LEDs = np.array([0, 0, 0, 0, 0, 0, 0, 0])
             # print(self.command)
             # talk to QCar
-            current, batteryVoltage, encoderCounts = self.myCar.read_write_std(self.command, LEDs)
+            current, batteryVoltage, encoderCounts = self.my_car.read_write_std(self.command, LEDs)
 
 
             battery_state = BatteryState()

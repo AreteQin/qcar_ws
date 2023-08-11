@@ -35,6 +35,7 @@ Teleop::Teleop() : throttle(0), steering(0) {
 }
 
 int kfd = 0;
+double steering_bias = -0.06; // bias to modify the steering angle to make the car go straight
 struct termios cooked, raw;
 
 void quit(int sig) {
@@ -71,7 +72,7 @@ void Teleop::keyLoop() {
 //    puts("s/x - Increase/decrease angular velocity");
     puts("Press q to quit");
     throttle = 0;
-    steering = 0;
+    steering = steering_bias;
     geometry_msgs::Vector3Stamped command_msgs;
     while (ros::ok()) {
         // get the next event from the keyboard
@@ -87,7 +88,7 @@ void Teleop::keyLoop() {
                 throttle = throttle;
                 if (steering < 0.3) {
                     steering = steering + 0.1;
-                }else{
+                } else {
                     steering = steering;
                 }
                 dirty = true;
@@ -97,30 +98,34 @@ void Teleop::keyLoop() {
                 throttle = throttle;
                 if (steering > -0.5) {
                     steering = steering - 0.1;
-                }else{
+                } else {
                     steering = steering;
                 }
                 dirty = true;
                 break;
             case KEYCODE_U:
                 ROS_DEBUG("UP");
-                if (throttle < 0.25) {
-                    throttle = throttle + 0.05;
-                }else{throttle = throttle;}
-                steering = -0.06; // bias to modify the steering angle to make the car go straight
+                if (throttle == 0) {
+                    throttle = 0.05;
+                } else if (throttle < 0.25) {
+                    throttle = throttle + 0.03;
+                } else { throttle = throttle; }
+                steering = steering_bias;
                 dirty = true;
                 break;
             case KEYCODE_D:
                 ROS_DEBUG("DOWN");
-                if (throttle > -0.25) {
-                    throttle = throttle - 0.05;
-                }else{throttle = throttle;}
-                steering = -0.06; // bias to modify the steering angle to make the car go straight
+                if (throttle == 0) {
+                    throttle = -0.05;
+                } else if (throttle > -0.25) {
+                    throttle = throttle - 0.03;
+                } else { throttle = throttle; }
+                steering = steering_bias;
                 dirty = true;
                 break;
             case KEYCODE_SPACE:
                 throttle = 0;
-                steering = -0.06;
+                steering = steering_bias;
                 ROS_DEBUG("STOP");
                 dirty = true;
                 break;

@@ -19,7 +19,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 find_package(OpenCV 4 REQUIRED)
-find_package(realsense2)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -161,16 +160,8 @@ add_executable(csi src/csicpp.cpp)
 target_link_libraries(csi ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 add_executable(rgbd src/rgbdcpp.cpp)
 target_link_libraries(rgbd ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
-add_executable(rgbd_transport src/rgbd_transport.cpp)
-target_link_libraries(rgbd_transport ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 add_executable(command src/commandcpp.cpp)
-target_link_libraries(command ${catkin_LIBRARIES})# ${QUANSER_LIBRARIES})
-
-add_executable(d435_publisher src/d435_publisher.cpp)
-target_link_libraries(d435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
-
-add_executable(camera_360 src/camera_360.cpp)
-target_link_libraries(camera_360 ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(command ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

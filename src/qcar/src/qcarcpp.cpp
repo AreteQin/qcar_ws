@@ -31,9 +31,9 @@ void cmd_sub(const geometry_msgs::Vector3Stamped::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "qcar");
+	ros::init(argc, argv, "qcar_obsolete");
 
-	static const char	board_type[] = "qcar";
+	static const char	board_type[] = "qcar_obsolete";
 	static const char	board_identifier[] = "0";
 	static char			message[512];
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
 		ros::Rate loop_rate(500);
 
-		ros::Subscriber sub = n.subscribe("/qcar/user_command", 100, cmd_sub);
+		ros::Subscriber sub = n.subscribe("/qcar_obsolete/user_command", 100, cmd_sub);
 
 		while (ros::ok())
 		{

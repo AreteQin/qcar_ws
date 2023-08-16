@@ -5,6 +5,6 @@
     <node name="csi" pkg="qcar" type='csi'/>
     <node name="rgbd" pkg="qcar" type='rgbd'/>
     <node name="command" pkg="qcar" type='command'/>
-    <!-- <node name="command_node" pkg="qcar"	
+    <!-- <node name="command_node" pkg="qcar_obsolete"
 	  type="commandnode.py" output="screen"/> -->
 </launch>

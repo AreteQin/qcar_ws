@@ -67,7 +67,7 @@ class QCar():
         self.card = HIL()
         try:
             # Open the Card
-            self.card.open("qcar", "0")
+            self.card.open("qcar_obsolete", "0")
             if self.card.is_valid():
                 # Set PWM mode (duty cycle) and frequency
                 self.card.set_pwm_mode(np.array([0], dtype=np.uint32), len(np.array([0], dtype=np.uint32)), np.array([PWMMode.DUTY_CYCLE], dtype=np.int32))

@@ -34,8 +34,8 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 	image_transport::ImageTransport it(n);
 	ros::Rate loop_rate(30);
-	image_transport::Publisher rgbd_color_pub = it.advertise("/qcar/rgbd_color", 1);
-	image_transport::Publisher rgbd_depth_pub = it.advertise("/qcar/rgbd_depth", 1);
+	image_transport::Publisher rgbd_color_pub = it.advertise("/qcar_obsolete/rgbd_color", 1);
+	image_transport::Publisher rgbd_depth_pub = it.advertise("/qcar_obsolete/rgbd_depth", 1);
 
 	rgbd_color_buffer = (t_uint8 *) memory_allocate(frame_width * frame_height * 3 * sizeof(t_uint8));
 	rgbd_depth_buffer = (t_single *) memory_allocate(frame_width * frame_height * sizeof(t_single));

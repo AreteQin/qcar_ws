@@ -46,7 +46,7 @@ int main(int argc, char **argv) //int main(int argc, char * argv[]) <-- this is 
 	ros::init(argc, argv, "csi_cpp_node");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(30);
-	ros::Publisher csi_front_pub = n.advertise<sensor_msgs::Image>("/qcar/csi_front", 10);
+	ros::Publisher csi_front_pub = n.advertise<sensor_msgs::Image>("/qcar_obsolete/csi_front", 10);
 
 	csi_front = (t_uint8 *) memory_allocate(frame_width * frame_height * 3 * sizeof(t_uint8));
 	if (csi_front != NULL)

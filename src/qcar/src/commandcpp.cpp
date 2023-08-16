@@ -31,7 +31,7 @@ private:
 
 Teleop::Teleop() : throttle(0), steering(0) {
     ros::NodeHandle n;
-    command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar/user_command", 1000);
+    command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar_obsolete/user_command", 1000);
 }
 
 int kfd = 0;

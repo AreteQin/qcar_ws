@@ -1,0 +1,89 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(qcar)
+
+## Compile as C++11, supported in ROS Kinetic and newer
+# add_compile_options(-std=c++11)
+
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+  cv_bridge
+  image_transport
+)
+
+## System dependencies are found with CMake's conventions
+find_package(OpenCV 4 REQUIRED)
+find_package(realsense2)
+
+add_definitions(-D_NVIDIA)
+
+catkin_package(
+  INCLUDE_DIRS # include
+#  LIBRARIES qcar_obsolete
+  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs cv_bridge image_transport
+#  DEPENDS system_lib
+)
+
+###########
+## Build ##
+###########
+
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(
+# include
+  ${catkin_INCLUDE_DIRS}
+  /opt/quanser/hil_sdk/include
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+## Declare a C++ library
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/qcar_obsolete.cpp
+# )
+set(QUANSER_LIBRARIES
+  -L/opt/quanser/hil_sdk/lib
+  -lhil
+  -lquanser_devices
+  -lquanser_media
+  -lquanser_runtime
+  -lquanser_common
+  -lrt -lpthread -ldl)
+
+
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Declare a C++ executable
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+# add_executable(${PROJECT_NAME}_node src/qcar_node.cpp)
+# add_executable(qcar_obsolete src/rgbdcpp_2.cpp)
+add_executable(lidar src/lidarcpp.cpp)
+target_link_libraries(lidar ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
+add_executable(qcar src/qcarcpp.cpp)
+target_link_libraries(qcar ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
+add_executable(csi src/csicpp.cpp)
+target_link_libraries(csi ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
+add_executable(rgbd src/rgbdcpp.cpp)
+target_link_libraries(rgbd ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
+add_executable(rgbd_transport src/rgbd_transport.cpp)
+target_link_libraries(rgbd_transport ${catkin_LIBRARIES} ${QUANSER_LIBRARIES})
+add_executable(command src/commandcpp.cpp)
+target_link_libraries(command ${catkin_LIBRARIES})# ${QUANSER_LIBRARIES})
+
+add_executable(d435_publisher src/d435_publisher.cpp)
+target_link_libraries(d435_publisher ${OpenCV_LIBS} ${catkin_LIBRARIES} ${realsense2_LIBRARY})
+
+add_executable(camera_360 src/camera_360.cpp)
+target_link_libraries(camera_360 ${OpenCV_LIBS} ${catkin_LIBRARIES})
+

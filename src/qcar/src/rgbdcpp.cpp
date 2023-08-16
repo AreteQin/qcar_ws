@@ -33,8 +33,8 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "rgbd_cpp_node");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(30);
-	ros::Publisher rgbd_color_pub = n.advertise<sensor_msgs::Image>("/qcar/rgbd_color", 10);
-	ros::Publisher rgbd_depth_pub = n.advertise<sensor_msgs::Image>("/qcar/rgbd_depth", 10);
+	ros::Publisher rgbd_color_pub = n.advertise<sensor_msgs::Image>("/qcar_obsolete/rgbd_color", 10);
+	ros::Publisher rgbd_depth_pub = n.advertise<sensor_msgs::Image>("/qcar_obsolete/rgbd_depth", 10);
 
 	rgbd_color_buffer = (t_uint8 *) memory_allocate(frame_width * frame_height * 3 * sizeof(t_uint8));
 	rgbd_depth_buffer = (t_single *) memory_allocate(frame_width * frame_height * sizeof(t_single));

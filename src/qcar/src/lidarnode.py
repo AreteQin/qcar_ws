@@ -1,72 +1,127 @@
 #!/usr/bin/env python3
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-from __future__ import division, print_function, absolute_import
+#region : File Description and Imports
 
-import roslib
 import rospy
 import numpy as np
-import cv2
-from qcar.q_essential import LIDAR
-
+from pal.products.qcar import QCarLidar
 from sensor_msgs.msg import LaserScan
-from std_msgs.msg import String
 import time
+#endregion
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+#region : QCar LiDAR Node
 
 class LIDARNode(object):
 	def __init__(self):
 		super().__init__()
-		self.lidar_pub = rospy.Publisher('/scan', LaserScan, queue_size=1000)
-		self.num_measurements = 720
-		self.lidar = LIDAR(num_measurements=self.num_measurements)
-		self.distances = np.zeros((self.num_measurements,1))
-		self.angles = np.zeros((self.num_measurements,1))
-		self.sampleTime = 1 / 30
+
+		# Specify number of samples and data publish rate
+		self.numMeasurements = 360	# Points
+		self.publishRate 	 = 10 	# Publish at 10 Hz
+
+		# Lidar settings
+		self.LIDAR_MEASUREMENT_MODE 	= 2
+		self.LIDAR_INTERPOlATION_MODE	= 0
+
+		# Lidar publisher constants:
+		self.RANGE_MIN	= float(0)
+		self.RANGE_MAX 	= float(12)
+
+		self.previousScan = time.perf_counter()
+
+		# Initialize RP Lidar
+		self.lidar = QCarLidar(numMeasurements=self.numMeasurements,
+							rangingDistanceMode= self.LIDAR_MEASUREMENT_MODE,
+							interpolationMode= self.LIDAR_INTERPOlATION_MODE)
+
+		# Sensor distances and angles measurements
+		self.distances = np.zeros((self.numMeasurements,1))
+		self.angles    = np.zeros((self.numMeasurements,1))
+
+
+		# Configure ROS publisher
+		self.lidarPub = rospy.Publisher('/scan', LaserScan, queue_size=1000)
+		rate = rospy.Rate(self.publishRate)
+
 		#Get readings
 		while not rospy.is_shutdown():
-			# sampleTime = 1 / 30
-			starTime = time.time()
-			self.lidar.read()
-			mid_time = time.time()
-			scan_time = mid_time - starTime
-			# print(scan_time)
-			# Calculate the computation time, and the time that the thread should pause/sleep for
-			computationTime = scan_time
-			sleepTime = self.sampleTime - ( computationTime % self.sampleTime )
-			
-			# Pause/sleep and print out the current timestamp
-			time.sleep(sleepTime)
-			# counter += 1
-			self.process_lidar_data(self.lidar_pub, self.lidar.distances.astype(np.float32), self.num_measurements, scan_time)
-			process_time = time.time() - mid_time
-			# print(process_time, scan_time)
-		self.lidar.terminate()
-			
-#--------------------------------------------------------------------------------------------------------------
-	def process_lidar_data(self, pub_lidar, distances, num_measurement, scan_times):
+			self.lidar_callback()
+			rate.sleep()
 
+	def lidar_callback(self):
+		# Get time for current scan
+		currentScanTime = time.perf_counter()
+		self.lidar.read()
+
+		# Delta in time between scans
+		self.scan_time    = currentScanTime - self.previousScan
+		self.previousScan = currentScanTime
+
+		self.filter_lidar_data(self.lidar.distances, self.lidar.angles)
+
+	def filter_lidar_data(self, currentScan, currentAngles):
+			# Initial check for lidar values, usually zeros for the first 2s
+			anglesNotZero = len(np.flatnonzero(currentAngles))
+
+			if anglesNotZero > 0:
+
+				# Check valid angles and ranges to be passed to LaseScan msg
+				validIndex  	  = np.flatnonzero(currentAngles)
+				validMeasurements = len(validIndex)
+				validRanges       = currentScan[validIndex]
+				validAngles       = currentAngles[validIndex]
+
+				# Reverse the range data to be compatible with the C.C.W convention used by the LaserScan msg
+				flippedRanges = np.flipud(validRanges)
+
+				# Error checking for RP Lidar, some scans stop at 2*Pi midway through a scan
+				checkedAngles = currentAngles>6.2
+
+				# Only publish data where RP Lidar gives consistent angle measurements
+				if not checkedAngles.any():
+
+					# Specify scan angular range based on headings from measured lidar data
+					self.angleMin 		 = float(validAngles[0])
+					self.angleMax 		 = float(validAngles[-1])
+					self.angleIncrement  = float(validAngles[-1]/validMeasurements)
+					self.timeIncrement   = float((1/self.publishRate)/validMeasurements)
+					self.process_lidar_data(flippedRanges,self.scan_time)
+
+	def process_lidar_data(self, distances, scan_times):
+
+		# Initialize LaserScan msg type
 		scan = LaserScan()
-		scan.header.stamp = rospy.Time.now()
-		scan.header.frame_id = 'lidar'
-		scan.angle_min = 0.0
-		scan.angle_max = 6.2744
-		# scan.angle_increment = 6.2744 / num_measurement
-		# scan.time_increment = scan_times / num_measurement
-		scan.angle_increment = 0.0174532923847
-		scan.time_increment = 0.000132342218421
-		scan.scan_time = scan_times
-		scan.range_min = 0.15
-		scan.range_max = 12.0
-		# print('before')
-		scan.ranges = distances.tolist()
-		# scan.ranges = []
-		# print('after')
-		# for i in range(num_measurement):
-		# 	scan.ranges.append(distances[i])
-		pub_lidar.publish(scan)
 
+		# Pupulate information for LaserScan message
+		scan.header.stamp    = rospy.Time.now()
+		scan.header.frame_id = 'lidar'
+		scan.angle_min 		 = self.angleMin 	   # rad
+		scan.angle_max 		 = self.angleMax 	   # rad
+		scan.angle_increment = self.angleIncrement # rad/measurement
+		scan.time_increment  = self.timeIncrement  # s/measurement
+		scan.scan_time 		 = float(scan_times)   # seconds
+		scan.range_min 		 = self.RANGE_MIN      # m
+		scan.range_max       = self.RANGE_MAX      # m
+		scan.ranges 		 = distances.tolist()  # m
+		self.lidarPub.publish(scan)
+
+	def stop_lidar(self):
+		self.lidar.terminate()
+#endregion
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+#region : Run
 
 if __name__ == '__main__':
 	rospy.init_node('lidar_node')
 	r = LIDARNode()
 
 	rospy.spin()
+	if KeyboardInterrupt:
+		r.stop_lidar()
+		print("Lidar has been stopped....")
+#endregion

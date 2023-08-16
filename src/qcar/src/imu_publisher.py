@@ -2,7 +2,7 @@
 
 import rospy
 from sensor_msgs.msg import Imu
-from qcar.product_QCar import QCar
+from qcar_obsolete.product_QCar import QCar
 
 if __name__ == "__main__":
     rospy.init_node("IMU_publisher")

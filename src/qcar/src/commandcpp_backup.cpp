@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "command_cpp_node");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(1000);
-	ros::Publisher command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar/user_command", 1000);
+	ros::Publisher command_pub = n.advertise<geometry_msgs::Vector3Stamped>("/qcar_obsolete/user_command", 1000);
 
 	result = game_controller_open(controller_number, buffer_size, deadzone, saturation, auto_center,
                      max_force_feedback_effects, force_feedback_gain, &gamepad);

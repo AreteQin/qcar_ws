@@ -7,7 +7,7 @@
 <!--  <param name="/use_sim_time" value="false"/>-->
 
   <node name="qcarnode" pkg="qcar"
-      type="qcarnode.py">
+      type="qcar_and_imu_node.py">
   </node>
 
   <node name="d435_publisher" pkg="qcar"

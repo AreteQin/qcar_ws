@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python3
 #
 # from __future__ import division, print_function, absolute_import
 #
@@ -62,16 +62,15 @@
 #         vel_cmd = sub_cmd.vector.x
 #         str_cmd = sub_cmd.vector.y - 0.01
 #         self.command = np.array([vel_cmd, str_cmd])
+#
+#
+#
+# if __name__ == '__main__':
+#     rospy.init_node('qcar_node')
+#     r = QcarNode()
+#     r.looping()
+#     rospy.spin()
 
-
-
-if __name__ == '__main__':
-    rospy.init_node('qcar_node')
-    r = QcarNode()
-    r.looping()
-    rospy.spin()
-
-#!/usr/bin/env python3
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 #region : File Description and Imports

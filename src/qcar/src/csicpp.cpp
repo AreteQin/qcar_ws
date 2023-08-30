@@ -42,7 +42,7 @@ int main(int argc, char **argv) //int main(int argc, char * argv[]) <-- this is 
     // "video://localhost:2" -> left camera
     // "video://localhost:3" -> front camera
 
-    char *cameraURI = "video://localhost:0";
+    char *cameraURI = "video://localhost:3";
 
     // Open video capture device with defined camera parameters
     result = video_capture_open(cameraURI, frame_rate,

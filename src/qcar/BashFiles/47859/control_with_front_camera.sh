@@ -7,5 +7,4 @@ source ~/qcar_ws/devel/setup.bash
 export PYTHONPATH=$PYTHONPATH:/home/nvidia/qcar_ws/python
 export ROS_IP=192.168.1.74
 export ROS_MASTER_URI=http://192.168.1.12:11311
-chmod +x /home/nvidia/qcar_ws/src/qcar/src/csinode.py
-rosrun qcar csinode.py
+roslaunch qcar control_with_front_camera.launch

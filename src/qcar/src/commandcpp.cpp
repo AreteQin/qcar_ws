@@ -35,7 +35,7 @@ Teleop::Teleop() : throttle(0), steering(0) {
 }
 
 int kfd = 0;
-double steering_bias = -0.06; // bias to modify the steering angle to make the car go straight
+double steering_bias = -0.11; // bias to modify the steering angle to make the car go straight
 struct termios cooked, raw;
 
 void quit(int sig) {

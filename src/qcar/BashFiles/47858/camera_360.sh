@@ -6,6 +6,6 @@ source /opt/ros/melodic/setup.bash
 source /media/nvidia/Sony32/qcar_ws/devel/setup.bash
 export PYTHONPATH=$PYTHONPATH:/home/nvidia/qcar_ws/python
 export ROS_IP=192.168.1.95
-export ROS_MASTER_URI=http://192.168.1.12:11311
+export ROS_MASTER_URI=http://192.168.1.25:11311
 sudo chmod +x /home/nvidia/qcar_ws/src/qcar/src/csinode.py
 rosrun qcar csinode.py

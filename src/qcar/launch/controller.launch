@@ -11,7 +11,7 @@
   </node>
 
   <node name="commandnode" pkg="qcar"
-      type="commandnode_controller.py">
+      type="command" output = "screen">
   </node>
 
 </launch>
